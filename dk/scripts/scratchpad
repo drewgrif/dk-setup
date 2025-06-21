@@ -1,108 +1,48 @@
 #!/bin/bash
 
-# Scratchpad terminal toggle script for dk
-# Usage: scratchpad [app_name] [app_command]
+# Simple scratchpad for dk
 
-APP_NAME="${1:-scratchpad}"
-APP_COMMAND="${2:-}"
-SCRATCHPAD_CLASS="$APP_NAME"
+APP="${1:-scratchpad}"
+CMD="${2:-}"
+CLASS="$APP"
 
-# Get terminal
-if command -v st >/dev/null 2>&1; then
-    TERMINAL_CMD="st"
-elif command -v wezterm >/dev/null 2>&1; then
-    TERMINAL_CMD="wezterm"
-elif command -v alacritty >/dev/null 2>&1; then
-    TERMINAL_CMD="alacritty"
+# Terminal command
+if [ -n "$CMD" ]; then
+    TERM="st -c $CLASS -e $CMD"
 else
-    notify-send "Error" "No terminal found"
-    exit 1
+    TERM="st -c $CLASS"
 fi
 
-# Build terminal command
-case "$TERMINAL_CMD" in
-    st)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD -c $SCRATCHPAD_CLASS -e $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD -c $SCRATCHPAD_CLASS"
-        fi
-        ;;
-    wezterm)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD start --class $SCRATCHPAD_CLASS -- $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD start --class $SCRATCHPAD_CLASS"
-        fi
-        ;;
-    alacritty)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS -e $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS"
-        fi
-        ;;
-esac
-
-# Check if window exists
-id=$(xdotool search --class "$SCRATCHPAD_CLASS" | head -1)
+# Check if exists
+id=$(xdotool search --class "$CLASS" | head -1)
 
 if [ -z "$id" ]; then
-    # Create new scratchpad
-    $TERMINAL &
+    # Create
+    $TERM &
+    sleep 0.3
+    id=$(xdotool search --class "$CLASS" | head -1)
     
-    # Wait for window to appear
-    for i in {1..10}; do
-        sleep 0.1
-        id=$(xdotool search --class "$SCRATCHPAD_CLASS" | head -1)
-        [ -n "$id" ] && break
-    done
-    
-    if [ -n "$id" ]; then
-        # Configure window based on type
-        if [ "$APP_NAME" = "scratchpad" ]; then
-            # Terminal at top - make it float and sticky
-            dkcmd win "$id" float
-            dkcmd win "$id" stick
-            sleep 0.1
-            # Get screen dimensions
-            eval $(xdotool getdisplaygeometry --shell)
-            # Calculate 75% width and 65% height
-            win_width=$(( WIDTH * 75 / 100 ))
-            win_height=$(( HEIGHT * 65 / 100 ))
-            xdotool windowsize "$id" "$win_width" "$win_height"
-            # Center horizontally, position at top
-            new_x=$(( (WIDTH - win_width) / 2 ))
-            xdotool windowmove "$id" "$new_x" 30
+    # Float and position
+    [ -n "$id" ] && {
+        hex=$(printf "0x%x" "$id")
+        dkcmd win "$hex" float=true stick=true
+        
+        if [ "$APP" = "scratchpad" ]; then
+            # Terminal - top center
+            xdotool windowsize "$id" 75% 65%
+            xdotool windowmove "$id" 12% 30
         else
-            # Apps like pulsemixer - centered
-            dkcmd win "$id" float
-            dkcmd win "$id" stick
-            sleep 0.1
-            xdotool windowsize "$id" 1200 800
-            # Get screen dimensions
-            eval $(xdotool getdisplaygeometry --shell)
-            # Calculate center position
-            new_x=$(( (WIDTH - 1200) / 2 ))
-            new_y=$(( (HEIGHT - 800) / 2 ))
-            xdotool windowmove "$id" "$new_x" "$new_y"
+            # Other apps - centered
+            xdotool windowsize "$id" 60% 50%
+            xdotool windowmove "$id" 20% 25%
         fi
-        # Mark window as visible
-        echo "visible" > "/tmp/dk-scratchpad-$SCRATCHPAD_CLASS"
-    fi
+    }
 else
-    # Toggle existing window
-    state_file="/tmp/dk-scratchpad-$SCRATCHPAD_CLASS"
-    
-    if [ -f "$state_file" ] && [ "$(cat "$state_file")" = "visible" ]; then
-        # Hide it by unmapping
+    # Toggle
+    if xdotool search --onlyvisible --class "$CLASS" >/dev/null; then
         xdotool windowunmap "$id"
-        echo "hidden" > "$state_file"
     else
-        # Show and focus it
         xdotool windowmap "$id"
         xdotool windowactivate "$id"
-        xdotool windowraise "$id"
-        echo "visible" > "$state_file"
     fi
 fi
