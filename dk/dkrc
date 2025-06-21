@@ -109,7 +109,7 @@ fi
 	dkcmd set smart_gap=false smart_border=false
 
 	# define mouse mod and move/resize buttons
-	dkcmd set mouse mod=alt move=button1 resize=button3
+	dkcmd set mouse mod=super move=button1 resize=button3
 
 
 	# borders
