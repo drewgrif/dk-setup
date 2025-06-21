@@ -10,7 +10,7 @@ logfile="$HOME/.dkrc.log"
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
 dunst -config ~/.config/dk/dunst/dunstrc &
 picom --config ~/.config/dk/picom/picom.conf --animations -b &
-feh --bg-fill ~/.config/dk/wallpaper/wallhaven-vq76dp_3440x1440.png &
+feh --bg-fill ~/.config/dk/wallpaper/wallhaven-lyq2rq_3440x1440.png &
 
 if hash sxhkd >/dev/null 2>&1; then
 	pkill sxhkd
@@ -56,17 +56,18 @@ fi
 	# dkcmd set ws=10 layout=grid pad left=20 right=20 top=10 bottom=10 gap=5
 
 	# change workspace names (default: number == name)
-	 dkcmd set \
-	 	ws=1  name="www" \
-	 	ws=2  name="dev" \
-		ws=3  name="dir" \
-		ws=4  name="txt" \
-		ws=5  name="vid" \
-		ws=6  name="pad" \
-		ws=7  name="mus" \
-	 	ws=8  name="gfx" \
-		ws=9  name="dis" \
-		ws=10 name="obs"
+	# Keeping default numeric names for flexibility
+	# dkcmd set \
+	# 	ws=1  name="www" \
+	# 	ws=2  name="dev" \
+	#	ws=3  name="dir" \
+	#	ws=4  name="txt" \
+	#	ws=5  name="vid" \
+	#	ws=6  name="pad" \
+	#	ws=7  name="mus" \
+	# 	ws=8  name="gfx" \
+	#	ws=9  name="dis" \
+	#	ws=10 name="obs"
 
 	# enable static workspaces and assign them to monitors (only relevant for multiple monitors)
 	# aside -
