@@ -47,7 +47,7 @@ fi
 
 	# default workspace '_' values used when allocating new workspaces
 	# can be applied to all existing workspaces when passed 'apply' after ws=_
-	dkcmd set ws=_ apply layout=tile master=1 stack=3 gap=10 msplit=0.5 ssplit=0.5
+	dkcmd set ws=_ apply layout=spiral master=1 stack=3 gap=10 msplit=0.5 ssplit=0.5
 
 	# use grid layout, padding, and gaps on workspace 10
 	# dkcmd set ws=3 layout=grid master=1 stack=1
@@ -132,9 +132,6 @@ fi
 	# --------------
 
 	# rule class, instance, and title regexes (*ALWAYS* CASE INSENSITIVE)
-
-	# default rule for all windows - center at 1600x900
-	dkcmd rule class=".*" float=true w=1600 h=900 x=center y=center
 
 	# open window(s) on a specific workspace (assigned monitor)
 	dkcmd rule class="^gimp$" ws=8 focus=true

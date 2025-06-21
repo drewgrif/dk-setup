@@ -224,6 +224,7 @@ if [ "$ONLY_CONFIG" = false ]; then
 
     # Install dk from source
     msg "Installing dk window manager from source..."
+    mkdir -p "$TEMP_DIR"
     cd "$TEMP_DIR"
     git clone https://bitbucket.org/natemaia/dk.git || die "Failed to clone dk repository"
     cd dk

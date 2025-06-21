@@ -74,9 +74,9 @@ Print
 super + Escape
 	pkill -USR1 -x sxhkd;notify-send 'sxhkd' 'Reloaded config'
 
-# Reload dk Configuration
+# Restart dk Window Manager
 super + shift + r
-	$HOME/.config/dk/dkrc; notify-send 'dk' 'Reloaded config'
+	dkcmd restart; notify-send 'dk' 'Restarted'
 
 # Quit dk (Exit Window Manager)
 super + shift + q
@@ -181,6 +181,34 @@ super + ctrl + shift + equal
 # Decrease Outer Border Width
 super + ctrl + shift + minus
 	dkcmd set border outer_width -1
+
+# Switch to Tile Layout
+ctrl + shift + 1
+	dkcmd set layout tile
+
+# Switch to Right Tile Layout  
+ctrl + shift + 2
+	dkcmd set layout rtile
+
+# Switch to Monocle Layout
+ctrl + shift + 3
+	dkcmd set layout mono
+
+# Switch to Grid Layout
+ctrl + shift + 4
+	dkcmd set layout grid
+
+# Switch to Spiral Layout
+ctrl + shift + 5
+	dkcmd set layout spiral
+
+# Switch to Dwindle Layout
+ctrl + shift + 6
+	dkcmd set layout dwindle
+
+# Switch to None/Floating Layout
+ctrl + shift + 7
+	dkcmd set layout none
 
 # Shutdown or Reboot
 super + x
