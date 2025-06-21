@@ -1,11 +1,36 @@
 #!/bin/bash
 # Get current dk layout with icon
 
-layout=$(dkcmd status type=ws 2>/dev/null | grep -B1 -A10 '"focused":true' | grep '"layout"' | head -1 | sed 's/.*"layout":"\([^"]*\)".*/\1/')
+# Check if dkcmd exists
+if ! command -v dkcmd &> /dev/null; then
+    echo "󰙀"  # Default icon if dk not running
+    exit 0
+fi
 
-# If empty, try alternative parsing
+# Get status and check if dk is responding
+status=$(dkcmd status type=ws 2>/dev/null)
+if [ -z "$status" ]; then
+    echo "󰙀"  # Default icon if no response
+    exit 0
+fi
+
+# Try to extract layout - multiple methods for robustness
+layout=$(echo "$status" | awk '
+    /"focused":true/ {
+        while (getline && !/^\s*\}/) {
+            if (/"layout"/) {
+                gsub(/.*"layout":\s*"/, "")
+                gsub(/".*/, "")
+                print
+                exit
+            }
+        }
+    }
+')
+
+# If still empty, try simpler grep approach
 if [ -z "$layout" ]; then
-    layout=$(dkcmd status type=ws 2>/dev/null | awk '/"focused":true/{found=1} found && /"layout":/{gsub(/.*"layout":"/, ""); gsub(/".*/, ""); print; exit}')
+    layout=$(echo "$status" | grep -A5 '"focused":true' | grep -oP '"layout":\s*"\K[^"]+' | head -1)
 fi
 
 # Map layouts to icons
