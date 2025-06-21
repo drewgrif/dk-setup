@@ -12,7 +12,7 @@ super + Return
 
 # Launch Rofi Application Menu
 super + space
-   	rofi -show drun -modi drun -line-padding 4 -hide-scrollbar -show-icons
+   	rofi -show drun -modi drun -line-padding 4 -hide-scrollbar -show-icons -theme ~/.config/dk/rofi/config.rasi
 
 # Show Keybinding Help Script
 super + h
@@ -33,6 +33,10 @@ super + p
 # Toggle Scratchpad Terminal
 super + shift + Return
     ~/.config/dk/scripts/scratchpad
+
+# Launch Pulsemixer in Scratchpad
+super + v
+    ~/.config/dk/scripts/scratchpad pulsemixer pulsemixer
 
 # Increase Volume (Custom Script)
 super + Insert

@@ -1,67 +1,31 @@
 #!/bin/bash
 
-# Scratchpad terminal toggle script for bspwm
+# Scratchpad terminal toggle script for dk
 # Usage: scratchpad [app_name] [app_command]
-# Examples:
-#   scratchpad                    # Default terminal scratchpad
-#   scratchpad pulsemixer         # Pulsemixer scratchpad
-#   scratchpad htop htop          # htop scratchpad
 
 APP_NAME="${1:-scratchpad}"
 APP_COMMAND="${2:-}"
 SCRATCHPAD_CLASS="$APP_NAME"
 
-# Function to find available terminal emulator
-get_terminal() {
-    # Check for user-defined scratchpad terminal first
-    if [ -n "$BSPWM_SCRATCHPAD_TERMINAL" ] && command -v "$BSPWM_SCRATCHPAD_TERMINAL" >/dev/null 2>&1; then
-        echo "$BSPWM_SCRATCHPAD_TERMINAL"
-        return
-    fi
-    
-    # Default to st for scratchpad if available (lightweight and fast)
-    if command -v st >/dev/null 2>&1; then
-        echo "st"
-        return
-    fi
-    
-    # Fall back to other terminals if st not available
-    for term in ghostty alacritty kitty wezterm xfce4-terminal gnome-terminal konsole urxvt; do
-        if command -v "$term" >/dev/null 2>&1; then
-            echo "$term"
-            return
-        fi
-    done
-    
-    # If no terminal found, notify user and exit
-    notify-send "Error" "No terminal emulator found. Please install st or set BSPWM_SCRATCHPAD_TERMINAL environment variable."
+# Get terminal
+if command -v st >/dev/null 2>&1; then
+    TERMINAL_CMD="st"
+elif command -v wezterm >/dev/null 2>&1; then
+    TERMINAL_CMD="wezterm"
+elif command -v alacritty >/dev/null 2>&1; then
+    TERMINAL_CMD="alacritty"
+else
+    notify-send "Error" "No terminal found"
     exit 1
-}
+fi
 
-# Get the terminal command
-TERMINAL_CMD=$(get_terminal)
-
-# Build the full terminal command with class option
+# Build terminal command
 case "$TERMINAL_CMD" in
-    st|urxvt)
+    st)
         if [ -n "$APP_COMMAND" ]; then
             TERMINAL="$TERMINAL_CMD -c $SCRATCHPAD_CLASS -e $APP_COMMAND"
         else
             TERMINAL="$TERMINAL_CMD -c $SCRATCHPAD_CLASS"
-        fi
-        ;;
-    alacritty)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS -e $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS"
-        fi
-        ;;
-    kitty)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS"
         fi
         ;;
     wezterm)
@@ -71,36 +35,7 @@ case "$TERMINAL_CMD" in
             TERMINAL="$TERMINAL_CMD start --class $SCRATCHPAD_CLASS"
         fi
         ;;
-    ghostty)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class=$SCRATCHPAD_CLASS -e $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class=$SCRATCHPAD_CLASS"
-        fi
-        ;;
-    xfce4-terminal)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class=$SCRATCHPAD_CLASS -e $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class=$SCRATCHPAD_CLASS"
-        fi
-        ;;
-    gnome-terminal)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class=$SCRATCHPAD_CLASS -- $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class=$SCRATCHPAD_CLASS"
-        fi
-        ;;
-    konsole)
-        if [ -n "$APP_COMMAND" ]; then
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS -e $APP_COMMAND"
-        else
-            TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS"
-        fi
-        ;;
-    *)
-        # For unknown terminals, try common syntax
+    alacritty)
         if [ -n "$APP_COMMAND" ]; then
             TERMINAL="$TERMINAL_CMD --class $SCRATCHPAD_CLASS -e $APP_COMMAND"
         else
@@ -109,13 +44,47 @@ case "$TERMINAL_CMD" in
         ;;
 esac
 
-# Check if scratchpad exists
-id=$(xdotool search --class "$SCRATCHPAD_CLASS")
+# Check if window exists
+id=$(xdotool search --class "$SCRATCHPAD_CLASS" | head -1)
 
 if [ -z "$id" ]; then
-    # Launch scratchpad if it doesn't exist
+    # Create new scratchpad
     $TERMINAL &
+    
+    # Wait for window to appear
+    for i in {1..10}; do
+        sleep 0.1
+        id=$(xdotool search --class "$SCRATCHPAD_CLASS" | head -1)
+        [ -n "$id" ] && break
+    done
+    
+    if [ -n "$id" ]; then
+        # Configure window based on type
+        if [ "$APP_NAME" = "scratchpad" ]; then
+            # Terminal at top
+            dkcmd rule class="^$SCRATCHPAD_CLASS$" float=true focus=true
+            xdotool windowsize "$id" 100% 30%
+            xdotool windowmove "$id" 0 0
+        else
+            # Apps like pulsemixer - centered
+            dkcmd rule class="^$SCRATCHPAD_CLASS$" float=true focus=true
+            xdotool windowsize "$id" 1200 800
+            # Get screen dimensions
+            eval $(xdotool getdisplaygeometry --shell)
+            # Calculate center position
+            new_x=$(( (WIDTH - 1200) / 2 ))
+            new_y=$(( (HEIGHT - 800) / 2 ))
+            xdotool windowmove "$id" "$new_x" "$new_y"
+        fi
+    fi
 else
-    # Toggle visibility if it exists
-    bspc node "$id" -g hidden -f
+    # Toggle existing window
+    if xdotool search --onlyvisible --class "$SCRATCHPAD_CLASS" >/dev/null 2>&1; then
+        # Hide it
+        xdotool windowminimize "$id"
+    else
+        # Show and focus it
+        xdotool windowactivate "$id"
+        xdotool windowraise "$id"
+    fi
 fi
