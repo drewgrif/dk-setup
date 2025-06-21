@@ -1,0 +1,21 @@
+#!/bin/bash
+# Get current dk layout with icon
+
+layout=$(dkcmd status type=ws 2>/dev/null | grep -B1 -A10 '"focused":true' | grep '"layout"' | head -1 | sed 's/.*"layout":"\([^"]*\)".*/\1/')
+
+# If empty, try alternative parsing
+if [ -z "$layout" ]; then
+    layout=$(dkcmd status type=ws 2>/dev/null | awk '/"focused":true/{found=1} found && /"layout":/{gsub(/.*"layout":"/, ""); gsub(/".*/, ""); print; exit}')
+fi
+
+# Map layouts to icons
+case "$layout" in
+    "tile")    echo "󰙀" ;;      # Tile icon
+    "rtile")   echo "󱒅" ;;      # Right tile icon  
+    "mono")    echo "󱟱" ;;      # Monocle/fullscreen icon
+    "grid")    echo "󰓰" ;;      # Grid icon
+    "spiral")  echo "󱒋" ;;      # Spiral icon
+    "dwindle") echo "󱒌" ;;      # Dwindle icon
+    "none")    echo "󰖲" ;;      # Floating icon
+    *)         echo "󰙀" ;;      # Default to tile icon
+esac
