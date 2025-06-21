@@ -43,6 +43,9 @@ else
         xdotool windowunmap "$id"
     else
         xdotool windowmap "$id"
+        # Re-apply float when showing
+        hex=$(printf "0x%x" "$id")
+        dkcmd win "$hex" float=true
         xdotool windowactivate "$id"
     fi
 fi

@@ -153,6 +153,10 @@ fi
 
 	# open window(s) in a floating state
 	dkcmd rule class="^(pavucontrol|transmission-gtk|qimgv|galculator|mpv|xfce4-terminal|lxappearance)$" float=true w=1280 h=720 x=center y=center stick=true
+	
+	# Scratchpad windows - always float and stick
+	dkcmd rule class="^scratchpad$" float=true stick=true
+	dkcmd rule class="^pulsemixer$" float=true stick=true
 
 	# open window(s) with a specific geometry and coordinates (floating only!)
 	# dkcmd rule class="^google-chrome$" title="^open files$" float=true w=1280 h=720
