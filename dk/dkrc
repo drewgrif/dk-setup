@@ -152,7 +152,7 @@ fi
 	# dkcmd rule class="^mpv$" instance="^albumart$" float=true ignore=true callback=albumart bw=0
 
 	# open window(s) in a floating state
-	dkcmd rule class="^(pavucontrol|transmission-gtk|qimgv|galculator|mpv|xfce4-terminal|lxappearance)$" float=true w=1280 h=720 x=center y=center stick=true
+	dkcmd rule class="^(pavucontrol|transmission-gtk|qimgv|galculator|mpv|st|lxappearance)$" float=true w=1280 h=720 x=center y=center stick=true
 	
 	# Scratchpad windows - always float and stick
 	dkcmd rule class="^scratchpad$" float=true stick=true
