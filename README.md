@@ -1,13 +1,11 @@
-# 🪟 bspwm-setup
+# 🪟 dk-setup
 
 ![Made for Debian](https://img.shields.io/badge/Made%20for-Debian-A81D33?style=for-the-badge&logo=debian&logoColor=white)
 
-A minimal but functional BSPWM rice script for Debian-based systems.  
+A minimal but functional DK window manager rice script for Debian-based systems.  
 Installs all core packages, window manager configs, and themes — ready to go out of the box.
 
 > Part of the [JustAGuy Linux](https://github.com/drewgrif) window manager collection.
-
-![2025-03-29_10-51](https://github.com/user-attachments/assets/f4a32241-f780-4487-98af-f2b85525c5ee)
 
 ---
 
@@ -15,8 +13,8 @@ Installs all core packages, window manager configs, and themes — ready to go o
 
 ### Quick Install
 ```bash
-git clone https://github.com/drewgrif/bspwm-setup.git
-cd bspwm-setup
+git clone https://github.com/drewgrif/dk-setup.git
+cd dk-setup
 chmod +x install.sh
 ./install.sh
 ```
@@ -51,9 +49,15 @@ Options:
 **Arch Linux:**
 ```bash
 # Install dependencies (package names may differ)
-sudo pacman -S bspwm sxhkd polybar rofi dunst picom thunar \
+sudo pacman -S sxhkd polybar rofi dunst picom thunar \
   xorg-xbacklight pamixer pavucontrol feh flameshot firefox \
   network-manager-applet xfce4-power-manager ttf-font-awesome
+
+# Build dk from source
+git clone https://bitbucket.org/natemaia/dk.git
+cd dk
+make
+sudo make install
 
 # Copy configuration files
 ./install.sh --only-config
@@ -62,9 +66,15 @@ sudo pacman -S bspwm sxhkd polybar rofi dunst picom thunar \
 **Fedora:**
 ```bash
 # Install dependencies (package names may differ)
-sudo dnf install bspwm sxhkd polybar rofi dunst picom thunar \
+sudo dnf install sxhkd polybar rofi dunst picom thunar \
   xbacklight pamixer pavucontrol feh flameshot firefox \
   network-manager-applet xfce4-power-manager fontawesome-fonts
+
+# Build dk from source
+git clone https://bitbucket.org/natemaia/dk.git
+cd dk
+make
+sudo make install
 
 # Copy configuration files
 ./install.sh --only-config
@@ -73,9 +83,15 @@ sudo dnf install bspwm sxhkd polybar rofi dunst picom thunar \
 **openSUSE:**
 ```bash
 # Install dependencies (package names may differ)
-sudo zypper install bspwm sxhkd polybar rofi dunst picom thunar \
+sudo zypper install sxhkd polybar rofi dunst picom thunar \
   xbacklight pamixer pavucontrol feh flameshot firefox \
   NetworkManager-applet xfce4-power-manager fontawesome-fonts
+
+# Build dk from source
+git clone https://bitbucket.org/natemaia/dk.git
+cd dk
+make
+sudo make install
 
 # Copy configuration files
 ./install.sh --only-config
@@ -101,7 +117,7 @@ sudo zypper install bspwm sxhkd polybar rofi dunst picom thunar \
 
 | Component             | Purpose                          |
 |------------------------|----------------------------------|
-| `bspwm`               | Tiling window manager            |
+| `dk`                  | Dynamic tiling window manager    |
 | `sxhkd`               | Hotkey daemon                    |
 | `picom` `(FT-Labs)`   | Compositor for transparency      |
 | `polybar`             | Status bar                       |
@@ -113,9 +129,8 @@ sudo zypper install bspwm sxhkd polybar rofi dunst picom thunar \
 | `thunar` + plugins    | File manager                     |
 | `nala`                | Better apt frontend              |
 | `pipewire`            | Audio handling                   |
-| `flameshot`,          | Screenshot tools                 |
+| `flameshot`           | Screenshot tools                 |
 | `micro`               | Terminal text editor             |
-| `redshift`            | Night light                      |
 | `qimgv`               | Lightweight image viewer         |
 | `fzf`, etc.           | Utilities & enhancements         |
 
@@ -132,7 +147,7 @@ sudo zypper install bspwm sxhkd polybar rofi dunst picom thunar \
 - Polybar with optimized layout: system info (left), workspaces (center), controls (right)
 - Enhanced polybar with multiple font support (Roboto Mono, FontAwesome, Hack Nerd Font)
 - Dunst, rofi, and GTK themes preconfigured
-- Wallpapers stored in `~/.config/bspwm/wallpaper`
+- Wallpapers stored in `~/.config/dk/wallpaper`
 - GTK Theme: [Orchis](https://github.com/vinceliuice/Orchis-theme)
 - Icon Theme: [Colloid](https://github.com/vinceliuice/Colloid-icon-theme)
 
@@ -150,27 +165,38 @@ sudo zypper install bspwm sxhkd polybar rofi dunst picom thunar \
 | `Super + Q`            | Close focused window                   |
 | `Super + H`            | Help via keybind viewer                |
 | `Super + V`            | Audio mixer (pulsemixer) in scratchpad |
-| `Super + Shift + R`    | Restart bspwm                          |
-| `Super + 1-9,0,-,=`    | Switch to workspace 1-12               |
-| `Super + Shift + 1-9,0,-,=` | Move window to workspace 1-12      |
+| `Super + Shift + R`    | Restart dk                             |
+| `Super + 1-9,0`        | Switch to workspace 1-10               |
+| `Super + Shift + 1-9,0`| Move window to workspace 1-10          |
+| `Super + Shift + Space`| Toggle floating mode                   |
+| `Super + Tab`          | Cycle through windows                  |
+
+### DK-Specific Controls
+
+| Key Combo              | Action                                |
+|------------------------|----------------------------------------|
+| `Super + I/D`          | Increase/decrease master windows       |
+| `Super + Shift + I/D`  | Increase/decrease stack windows        |
+| `Super + Equal/Minus`  | Increase/decrease gaps                 |
+| `Super + Ctrl + Arrow` | Resize focused window                  |
 
 Keybindings are configured via:
 
-- `~/.config/sxhkd/sxhkdrc`
-- `~/.config/bspwm/scripts/help` (run manually or with `Super + H`)
+- `~/.config/dk/sxhkd/sxhkdrc`
+- `~/.config/dk/scripts/help` (run manually or with `Super + H`)
 
 ---
 
 ## 📂 Configuration Files
 
 ```
-~/.config/bspwm/
-├── bspwmrc                # Main bspwm config
+~/.config/dk/
+├── dkrc                   # Main dk config
 ├── sxhkd/
 │   └── sxhkdrc            # Keybinding configuration
 ├── polybar/
 │   ├── config.ini
-│   └── launch.sh
+│   └── polybar-dk
 ├── dunst/
 │   └── dunstrc
 ├── rofi/
@@ -178,7 +204,6 @@ Keybindings are configured via:
 │   └── theme.rasi
 ├── scripts/
 │   ├── changevolume
-│   ├── autoresize.sh
 │   ├── power
 │   ├── scratchpad
 │   └── help
@@ -194,18 +219,18 @@ The setup uses two terminals for different purposes:
 
 #### Scratchpad Terminal Support
 
-The scratchpad system now supports multiple terminal emulators with intelligent fallback:
+The scratchpad system supports multiple terminal emulators with intelligent fallback:
 
 **Supported terminals:** st, ghostty, alacritty, kitty, wezterm, xfce4-terminal, gnome-terminal, konsole, urxvt
 
 **Priority order:**
-1. User-defined via `BSPWM_SCRATCHPAD_TERMINAL` environment variable
+1. User-defined via `DK_SCRATCHPAD_TERMINAL` environment variable
 2. st (preferred for speed and minimal resource usage)
 3. Automatic fallback through available terminals
 
 To customize the scratchpad terminal, set the environment variable in your shell config:
 ```bash
-export BSPWM_SCRATCHPAD_TERMINAL=ghostty  # or any terminal you prefer
+export DK_SCRATCHPAD_TERMINAL=ghostty  # or any terminal you prefer
 ```
 
 **Advanced scratchpad usage:**
@@ -221,4 +246,3 @@ Super + Shift + Enter    # Default terminal scratchpad
 
 Want to see how it looks and works?  
 🎥 Check out [JustAGuy Linux on YouTube](https://www.youtube.com/@JustAGuyLinux)
-
