@@ -34,7 +34,7 @@ elif [ $dpi -ge 120 ]; then
 	border_outer_width=2
 else
 	border_width=4
-	border_outer_width=1
+	border_outer_width=0
 fi
 
 { # compound command to redirect all output
@@ -47,7 +47,7 @@ fi
 
 	# default workspace '_' values used when allocating new workspaces
 	# can be applied to all existing workspaces when passed 'apply' after ws=_
-	dkcmd set ws=_ apply layout=tile master=1 stack=3 gap=16 msplit=0.50 ssplit=0.50
+	dkcmd set ws=_ apply layout=tile master=1 stack=3 gap=10 msplit=0.5 ssplit=0.5
 
 	# use grid layout, padding, and gaps on workspace 10
 	# dkcmd set ws=3 layout=grid master=1 stack=1
@@ -120,18 +120,21 @@ fi
 	# outer_width must be less than width, outer_width of 0 will be single borders
 	dkcmd set border width=$border_width outer_width=$border_outer_width \
 		colour \
-		focus='#4fc3f7' \
-		unfocus='#1a1a1a' \
-		urgent='#b3e5fc' \
-		outer_focus='#4fc3f7' \
-		outer_unfocus='#1a1a1a' \
-		outer_urgent='#b3e5fc'
+		focus='#539bf5' \
+		unfocus='#2f363d' \
+		urgent='#ee5555' \
+		outer_focus='#539bf5' \
+		outer_unfocus='#2f363d' \
+		outer_urgent='#ee5555'
 
 
 	# window rules
 	# --------------
 
 	# rule class, instance, and title regexes (*ALWAYS* CASE INSENSITIVE)
+
+	# default rule for all windows - center at 1600x900
+	dkcmd rule class=".*" float=true w=1600 h=900 x=center y=center
 
 	# open window(s) on a specific workspace (assigned monitor)
 	dkcmd rule class="^gimp$" ws=8 focus=true

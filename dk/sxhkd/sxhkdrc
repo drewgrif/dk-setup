@@ -1,126 +1,187 @@
-# example sxhkdrc for use with dk
-#########################################################
-
-# launcher
-super + p
-	dmenu_run
-	
-# rofi launcher
-super + space
-   	rofi -show drun -modi drun -line-padding 4 -hide-scrollbar -show-icons
-   	
-super + h
-	tilix -e ~/.config/dk/keyhelper.sh
-	
+# Launch Browser (Firefox)
 super + b
 	firefox-esr
 
+# Launch Private Browser (Firefox Incognito Mode)
 super + shift + b
 	firefox-esr -private-window
 
-super + e
-	geany
+# Launch Terminal (Wezterm)
+super + Return
+	wezterm
 
+# Launch Rofi Application Menu
+super + space
+   	rofi -show drun -modi drun -line-padding 4 -hide-scrollbar -show-icons
+
+# Show Keybinding Help Script
+super + h
+	~/.config/dk/scripts/help
+
+# Launch File Manager (Thunar)
 super + f
 	thunar
 
-# terminal
-super + Return
-	tilix
+# Launch Text Editor (Geany)
+super + e
+	geany
 
-#########
-# Maim #
-#########
-super + @Print
-    maim -s ~/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; \
-    notify-send 'Maim' 'Selected image saved to ~/Screenshots'
+# Launch dmenu
+super + p
+	dmenu_run
 
-@Print
-    maim ~/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png; \
-    notify-send 'Maim' 'Image saved to ~/Screenshots'
-	
-## redshift
-super + alt + r
-	~/scripts/redshift-on
-	
-super + alt + b
-	~/scripts/redshift-off
-	
-	
-# dedicated volume keys
-{XF86AudioRaiseVolume,XF86AudioLowerVolume}
-	pamixer {-i,-d} 2
+# Toggle Scratchpad Terminal
+super + shift + Return
+    ~/.config/dk/scripts/scratchpad
 
-# dedicated backlight keys
-{XF86MonBrightnessUp,XF86MonBrightnessDown}
-	xbacklight {+10,-10}
-	
-## audio
-
-# Change volume, chunky
+# Increase Volume (Custom Script)
 super + Insert
-    ~/scripts/changevolume up
-    
-super + Delete
-	~/scripts/changevolume down
-	
-super + m
-	~/scripts/changevolume mute
-	
-# super volume keys
-# super + {Insert,Delete}
-#	pamixer {-i,-d} 2
+    ~/.config/dk/scripts/changevolume up
 
-# reload sxhkd
+# Decrease Volume (Custom Script)
+super + Delete
+	~/.config/dk/scripts/changevolume down
+
+# Mute Volume (Custom Script)
+super + m
+	~/.config/dk/scripts/changevolume mute
+
+# Increase Volume (Using pamixer)
+XF86AudioRaiseVolume
+	pamixer -i 2
+
+# Decrease Volume (Using pamixer)
+XF86AudioLowerVolume
+	pamixer -d 2
+
+# Increase Screen Brightness
+XF86MonBrightnessUp
+	xbacklight +10
+
+# Decrease Screen Brightness
+XF86MonBrightnessDown
+	xbacklight -10
+
+# Take a Screenshot (Region Select)
+super + Print
+	flameshot gui --path ~/Screenshots/
+
+# Take a Fullscreen Screenshot
+Print
+	flameshot full --path ~/Screenshots/
+
+# Reload sxhkd (Hotkey Daemon)
 super + Escape
 	pkill -USR1 -x sxhkd;notify-send 'sxhkd' 'Reloaded config'
 
-# quit dk
-super + shift + q
-	dkcmd exit
-
-# reload dkrc
+# Reload dk Configuration
 super + shift + r
 	$HOME/.config/dk/dkrc; notify-send 'dk' 'Reloaded config'
 
+# Quit dk (Exit Window Manager)
+super + shift + q
+	dkcmd exit
 
-# focus next or previous window
-super + {Right,Left}
-	dkcmd win focus {next,prev}
+# Close Focused Window
+super + q
+	dkcmd win kill
 
-# close window, swap tiled window in/out of master, cycle tiled windows in place
-super + {q,Tab}
-	dkcmd win {kill,cycle}
+# Cycle Through Windows
+super + Tab
+	dkcmd win cycle
 
+# Toggle Floating Mode
+super + shift + space
+	dkcmd win float
 
-# toggle floating or sticky
-super + shift + {space,s}
-	dkcmd win {float,stick}
+# Toggle Sticky Mode (Window on All Workspaces)
+super + shift + s
+	dkcmd win stick
 
-# resize window, signed (+/-) for relative changes
-super + ctrl + {Left,Up,Down,Right}
-	dkcmd win resize {w=-20,h=+20,h=-20,w=+20}
+# Focus Next Window
+super + Right
+	dkcmd win focus next
 
-# move the active window up/down the stack
-super + shift + {Right,Left}
-	dkcmd win mvstack {up,down}
+# Focus Previous Window
+super + Left
+	dkcmd win focus prev
 
-# view, send, or follow to a workspace (by number)
-super + {_,shift + ,ctrl + }{1-9,0}
-	dkcmd ws {view,send,follow} {1-9,10}
-	
-# view, send, or follow to the next, previous, or last active monitor
-# super + {_,shift + ,ctrl + }{comma,period,backslash}
-# 	dkcmd mon {view,send,follow} {prev,next,last}
+# Move Window Up in Stack
+super + shift + Right
+	dkcmd win mvstack up
 
-# change number of windows in master or first stack
-super + {_,shift + }{i,d}
-	dkcmd set {master,stack} {+1,-1}
+# Move Window Down in Stack
+super + shift + Left
+	dkcmd win mvstack down
 
-# change gap width
-super + {equal,minus}
-	dkcmd set gap {+5,-5}
+# Resize Window: Shrink Width
+super + ctrl + Left
+	dkcmd win resize w=-20
 
-# change border widths
-super + ctrl + {_,shift + }{equal,minus}
-	dkcmd set border {width,outer_width} {+1,-1}
+# Resize Window: Grow Height
+super + ctrl + Up
+	dkcmd win resize h=+20
+
+# Resize Window: Shrink Height
+super + ctrl + Down
+	dkcmd win resize h=-20
+
+# Resize Window: Grow Width
+super + ctrl + Right
+	dkcmd win resize w=+20
+
+# Switch to Workspace 1-10
+super + {1-9,0}
+	dkcmd ws view {1-9,10}
+
+# Move Window to Workspace 1-10
+super + shift + {1-9,0}
+	dkcmd ws send {1-9,10}
+
+# Move Window to Workspace and Follow 1-10
+super + ctrl + {1-9,0}
+	dkcmd ws follow {1-9,10}
+
+# Increase Number of Master Windows
+super + i
+	dkcmd set master +1
+
+# Decrease Number of Master Windows
+super + d
+	dkcmd set master -1
+
+# Increase Number of Stack Windows
+super + shift + i
+	dkcmd set stack +1
+
+# Decrease Number of Stack Windows
+super + shift + d
+	dkcmd set stack -1
+
+# Increase Gap Width
+super + equal
+	dkcmd set gap +5
+
+# Decrease Gap Width
+super + minus
+	dkcmd set gap -5
+
+# Increase Border Width
+super + ctrl + equal
+	dkcmd set border width +1
+
+# Decrease Border Width
+super + ctrl + minus
+	dkcmd set border width -1
+
+# Increase Outer Border Width
+super + ctrl + shift + equal
+	dkcmd set border outer_width +1
+
+# Decrease Outer Border Width
+super + ctrl + shift + minus
+	dkcmd set border outer_width -1
+
+# Shutdown or Reboot
+super + x
+	~/.config/dk/scripts/power
