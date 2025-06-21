@@ -61,13 +61,24 @@ if [ -z "$id" ]; then
     if [ -n "$id" ]; then
         # Configure window based on type
         if [ "$APP_NAME" = "scratchpad" ]; then
-            # Terminal at top
-            dkcmd rule class="^$SCRATCHPAD_CLASS$" float=true focus=true
-            xdotool windowsize "$id" 100% 30%
-            xdotool windowmove "$id" 0 0
+            # Terminal at top - make it float and sticky
+            dkcmd win "$id" float
+            dkcmd win "$id" stick
+            sleep 0.1
+            # Get screen dimensions
+            eval $(xdotool getdisplaygeometry --shell)
+            # Calculate 75% width and 65% height
+            win_width=$(( WIDTH * 75 / 100 ))
+            win_height=$(( HEIGHT * 65 / 100 ))
+            xdotool windowsize "$id" "$win_width" "$win_height"
+            # Center horizontally, position at top
+            new_x=$(( (WIDTH - win_width) / 2 ))
+            xdotool windowmove "$id" "$new_x" 30
         else
             # Apps like pulsemixer - centered
-            dkcmd rule class="^$SCRATCHPAD_CLASS$" float=true focus=true
+            dkcmd win "$id" float
+            dkcmd win "$id" stick
+            sleep 0.1
             xdotool windowsize "$id" 1200 800
             # Get screen dimensions
             eval $(xdotool getdisplaygeometry --shell)
@@ -76,15 +87,22 @@ if [ -z "$id" ]; then
             new_y=$(( (HEIGHT - 800) / 2 ))
             xdotool windowmove "$id" "$new_x" "$new_y"
         fi
+        # Mark window as visible
+        echo "visible" > "/tmp/dk-scratchpad-$SCRATCHPAD_CLASS"
     fi
 else
     # Toggle existing window
-    if xdotool search --onlyvisible --class "$SCRATCHPAD_CLASS" >/dev/null 2>&1; then
-        # Hide it
-        xdotool windowminimize "$id"
+    state_file="/tmp/dk-scratchpad-$SCRATCHPAD_CLASS"
+    
+    if [ -f "$state_file" ] && [ "$(cat "$state_file")" = "visible" ]; then
+        # Hide it by unmapping
+        xdotool windowunmap "$id"
+        echo "hidden" > "$state_file"
     else
         # Show and focus it
+        xdotool windowmap "$id"
         xdotool windowactivate "$id"
         xdotool windowraise "$id"
+        echo "visible" > "$state_file"
     fi
 fi
