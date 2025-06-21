@@ -1,36 +1,15 @@
 #!/bin/bash
-# Get current dk layout with icon
+# Get current dk layout with icon - simple file-based approach
 
-# Check if dkcmd exists
-if ! command -v dkcmd &> /dev/null; then
-    echo "󰙀"  # Default icon if dk not running
-    exit 0
-fi
+# Read layout from file (we'll write to this file when changing layouts)
+LAYOUT_FILE="/tmp/dk-current-layout"
 
-# Get status and check if dk is responding
-status=$(dkcmd status type=ws 2>/dev/null)
-if [ -z "$status" ]; then
-    echo "󰙀"  # Default icon if no response
-    exit 0
-fi
-
-# Try to extract layout - multiple methods for robustness
-layout=$(echo "$status" | awk '
-    /"focused":true/ {
-        while (getline && !/^\s*\}/) {
-            if (/"layout"/) {
-                gsub(/.*"layout":\s*"/, "")
-                gsub(/".*/, "")
-                print
-                exit
-            }
-        }
-    }
-')
-
-# If still empty, try simpler grep approach
-if [ -z "$layout" ]; then
-    layout=$(echo "$status" | grep -A5 '"focused":true' | grep -oP '"layout":\s*"\K[^"]+' | head -1)
+# If file exists, read it
+if [ -f "$LAYOUT_FILE" ]; then
+    layout=$(cat "$LAYOUT_FILE")
+else
+    # Default to spiral (your preferred default)
+    layout="spiral"
 fi
 
 # Map layouts to icons
@@ -42,5 +21,5 @@ case "$layout" in
     "spiral")  echo "󱒋" ;;      # Spiral icon
     "dwindle") echo "󱒌" ;;      # Dwindle icon
     "none")    echo "󰖲" ;;      # Floating icon
-    *)         echo "󰙀" ;;      # Default to tile icon
+    *)         echo "󱒋" ;;      # Default to spiral icon
 esac

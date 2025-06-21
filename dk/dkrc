@@ -48,6 +48,9 @@ fi
 	# default workspace '_' values used when allocating new workspaces
 	# can be applied to all existing workspaces when passed 'apply' after ws=_
 	dkcmd set ws=_ apply layout=spiral master=1 stack=3 gap=10 msplit=0.5 ssplit=0.5
+	
+	# Set initial layout in temp file for polybar
+	echo "spiral" > /tmp/dk-current-layout
 
 	# use grid layout, padding, and gaps on workspace 10
 	# dkcmd set ws=3 layout=grid master=1 stack=1

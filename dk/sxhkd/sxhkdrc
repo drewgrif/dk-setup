@@ -184,31 +184,31 @@ super + ctrl + shift + minus
 
 # Switch to Tile Layout
 ctrl + shift + 1
-	dkcmd set layout tile && notify-send "Layout" "Switched to Tile"
+	dkcmd set layout tile && echo "tile" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Tile"
 
 # Switch to Right Tile Layout  
 ctrl + shift + 2
-	dkcmd set layout rtile && notify-send "Layout" "Switched to Right Tile"
+	dkcmd set layout rtile && echo "rtile" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Right Tile"
 
 # Switch to Monocle Layout
 ctrl + shift + 3
-	dkcmd set layout mono && notify-send "Layout" "Switched to Monocle"
+	dkcmd set layout mono && echo "mono" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Monocle"
 
 # Switch to Grid Layout
 ctrl + shift + 4
-	dkcmd set layout grid && notify-send "Layout" "Switched to Grid"
+	dkcmd set layout grid && echo "grid" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Grid"
 
 # Switch to Spiral Layout
 ctrl + shift + 5
-	dkcmd set layout spiral && notify-send "Layout" "Switched to Spiral"
+	dkcmd set layout spiral && echo "spiral" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Spiral"
 
 # Switch to Dwindle Layout
 ctrl + shift + 6
-	dkcmd set layout dwindle && notify-send "Layout" "Switched to Dwindle"
+	dkcmd set layout dwindle && echo "dwindle" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Dwindle"
 
 # Switch to None/Floating Layout
 ctrl + shift + 7
-	dkcmd set layout none && notify-send "Layout" "Switched to Floating"
+	dkcmd set layout none && echo "none" > /tmp/dk-current-layout && notify-send "Layout" "Switched to Floating"
 
 # Shutdown or Reboot
 super + x
