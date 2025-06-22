@@ -83,7 +83,7 @@ if [ "$1" = "menu" ]; then
     done
 
     # Show rofi menu and get selection
-    selected=$(echo -e "$menu_options" | rofi -dmenu -i -p "Select Layout:" -theme-str 'window {width: 300px;}' | head -1)
+    selected=$(echo -e "$menu_options" | rofi -dmenu -i -p "Select Layout:" -line-padding 4 -hide-scrollbar -theme ~/.config/dk/rofi/keybinds.rasi | head -1)
     
     if [ -n "$selected" ]; then
         # Extract layout name from selection
