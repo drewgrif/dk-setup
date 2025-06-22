@@ -18,21 +18,9 @@ fi
 
 ~/.config/dk/polybar/polybar-dk &
 
-# dpi-based border sizing
-px=$(xrandr | grep ' connected' | tail -n1 | grep -o '[0-9]\+x[0-9]\+' | cut -d'x' -f2)
-mm=$(xrandr | grep ' connected' | tail -n1 | grep -o '[0-9]\+mm' | tail -n1 | sed 's/mm//')
-dpi=$(( (px / mm) * 25 ))
-
-if [ $dpi -ge 140 ]; then
-	border_width=5
-	border_outer_width=3
-elif [ $dpi -ge 120 ]; then
-	border_width=4
-	border_outer_width=2
-else
-	border_width=4
-	border_outer_width=0
-fi
+# fixed border sizing (matching bspwm config)
+border_width=4
+border_outer_width=0
 
 {
 	dkcmd set numws=10
@@ -60,11 +48,9 @@ fi
 	dkcmd rule class="^obs$" ws=10 focus=true
 	dkcmd rule class="^github desktop$" ws=2 focus=true
 	dkcmd rule class="^(pavucontrol|transmission-gtk|qimgv|galculator|mpv|st|lxappearance)$" float=true w=1280 h=720 x=center y=center stick=true
-	dkcmd rule class="^scratchpad$" float=true stick=true
-	dkcmd rule class="^pulsemixer$" float=true stick=true
+	dkcmd rule class="^scratchpad$" float=true stick=true x=center y=center
+	dkcmd rule class="^pulsemixer$" float=true stick=true x=center y=center
 	dkcmd rule class="^stickyterm$" stick=true float=true w=1280 h=720
-	dkcmd rule class="^firefox$" mon="HDMI-A-0"
-	dkcmd rule remove class="^firefox$"
 	dkcmd rule apply '*'
 } >> "$logfile" 2>&1
 
