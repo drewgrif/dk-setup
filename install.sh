@@ -266,7 +266,7 @@ mkdir -p "$CONFIG_DIR"
 cp "$SCRIPT_DIR"/dk/dkrc "$CONFIG_DIR"/ || die "Failed to copy dkrc"
 
 # Copy configuration directories
-for dir in dunst picom polybar rofi scripts sxhkd wallpaper; do
+for dir in dunst picom polybar rofi scripts sxhkd; do
     if [ -d "$SCRIPT_DIR/dk/$dir" ]; then
         cp -r "$SCRIPT_DIR/dk/$dir" "$CONFIG_DIR"/ || die "Failed to copy $dir"
     else
@@ -308,6 +308,13 @@ if [ "$ONLY_CONFIG" = false ]; then
 
     msg "Installing themes..."
     get_script "theming/install_theme.sh"
+
+    msg "Downloading wallpaper directory..."
+    cd "$CONFIG_DIR"
+    git clone --depth 1 --filter=blob:none --sparse https://github.com/drewgrif/butterscripts.git "$TEMP_DIR/butterscripts-wallpaper" || die "Failed to clone butterscripts"
+    cd "$TEMP_DIR/butterscripts-wallpaper"
+    git sparse-checkout set wallpaper || die "Failed to set sparse-checkout"
+    cp -r wallpaper "$CONFIG_DIR"/ || die "Failed to copy wallpaper directory"
 
     msg "Downloading display manager installer..."
     wget -O "$TEMP_DIR/install_lightdm.sh" "https://raw.githubusercontent.com/drewgrif/butterscripts/main/system/install_lightdm.sh"
