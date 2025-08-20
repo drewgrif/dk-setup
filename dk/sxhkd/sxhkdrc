@@ -18,6 +18,10 @@ super + space
 super + h
 	~/.config/dk/scripts/help
 
+# Paste to note (bashrc note)    
+super + shift + v
+    bash -ic 'note clip && notify-send " Clipboard saved to notes"'
+
 # Launch File Manager (Thunar)
 super + f
 	thunar
